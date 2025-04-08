@@ -27,6 +27,9 @@ current_dir="$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)"
 install_dotfiles "${current_dir}/home_files" "${HOME}"
 install_dotfiles "${current_dir}/workspace_repo" "${GITPOD_REPO_ROOT}"
 
+EPHEMERAL_JB_DIR=(/workspace/.config/JetBrains/RemoteDev-*)
+install_dotfiles "${current_dir}/ephemeral_jetbrains_config" "${EPHEMERAL_JB_DIR}"
+
 if test ! -e /usr/bin/commitjb; then
     sudo ln -s "${current_dir}/commitjb" /usr/bin/
 fi
