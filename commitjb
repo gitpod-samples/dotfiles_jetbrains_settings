@@ -4,9 +4,12 @@ set -eu
 DOTFILES_DIR="${HOME}/.dotfiles"
 DOTFILES_WORKSPACE_REPO_DIR="${DOTFILES_DIR}/workspace_repo"
 DOTFILES_HOME_DIR="${DOTFILES_DIR}/home_files"
+DOTFILES_EPHEMERAL_JB_DIR="${DOTFILES_DIR}/ephemeral_jetbrains_config"
+
 PERSISTENT_JB_DIR="${HOME}/.gitpod/jetbrains/${JETBRAINS_GITPOD_BACKEND_KIND:-}"
 PERSISTENT_DOTFILES_DIR="${DOTFILES_HOME_DIR}/${PERSISTENT_JB_DIR#$HOME/}"
-EPHEMERAL_JB_OPTIONS_DIR=(/workspace/.config/JetBrains/RemoteDev-*/options)
+EPHEMERAL_JB_DIR=(/workspace/.config/JetBrains/RemoteDev-*)
+EPHEMERAL_JB_OPTIONS_DIR="${EPHEMERAL_JB_DIR}/options"
 
 (
     mkdir -p "${PERSISTENT_DOTFILES_DIR}"
@@ -25,6 +28,13 @@ EPHEMERAL_JB_OPTIONS_DIR=(/workspace/.config/JetBrains/RemoteDev-*/options)
       cp -ar "${workspace_xml}" "${DOTFILES_WORKSPACE_REPO_DIR}/.idea" || :
     fi
 
+    # /workspace/.config/JetBrains/RemoteDev-*/templates
+    templates_dir="${EPHEMERAL_JB_DIR}/templates"
+    if test -e "${templates_dir}"; then
+      mkdir -p "${DOTFILES_EPHEMERAL_JB_DIR}"
+      cp -ar "${templates_dir}" "${DOTFILES_EPHEMERAL_JB_DIR}/" || :
+    fi
+
     "$HOME/.dotfiles/install.sh"
     cd "${DOTFILES_DIR}"
     git add .
@@ -32,4 +42,4 @@ EPHEMERAL_JB_OPTIONS_DIR=(/workspace/.config/JetBrains/RemoteDev-*/options)
     git push
 )
 
-printf '[info] %s\n' "Successfully cloned ${EPHEMERAL_JB_OPTIONS_DIR} contents to a persistent location"
+printf '[info] %s\n' "Successfully cloned JB files to a persistent location"
