@@ -25,7 +25,9 @@ function install_dotfiles() {
 current_dir="$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)"
 
 install_dotfiles "${current_dir}/home_files" "${HOME}"
-install_dotfiles "${current_dir}/workspace_repo" "${GITPOD_REPO_ROOT}"
+if test ! -e "${GITPOD_REPO_ROOT}/.idea/workspace.xml"; then
+  install_dotfiles "${current_dir}/workspace_repo" "${GITPOD_REPO_ROOT}"
+fi
 
 if test -e "${current_dir}/ephemeral_jetbrains_config" && test -v JETBRAINS_BACKEND_QUALIFIER; then
     (
